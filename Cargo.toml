@@ -6,3 +6,6 @@ edition = "2024"
 [dependencies]
 axum = { version = "0.8.4", features = ["macros"] }
 tokio = { version = "1.45.1", features = ["full"] }
+
+[dev-dependencies]
+rstest = "0.25.0"
