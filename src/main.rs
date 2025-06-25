@@ -1,9 +1,9 @@
 use std::net::{Ipv4Addr, SocketAddr};
 
 use anyhow::Result;
-use axum::{extract::State, http::StatusCode, routing::get, Router};
+use axum::{Router, extract::State, http::StatusCode, routing::get};
+use sqlx::{PgPool, postgres::PgConnectOptions};
 use tokio::net::TcpListener;
-use sqlx::{postgres::PgConnectOptions, PgPool};
 
 struct DatabaseConfig {
     pub host: String,
@@ -22,7 +22,6 @@ impl From<DatabaseConfig> for PgConnectOptions {
             .password(&config.password)
             .database(&config.database)
     }
-    
 }
 
 fn connect_database_with(config: DatabaseConfig) -> PgPool {
