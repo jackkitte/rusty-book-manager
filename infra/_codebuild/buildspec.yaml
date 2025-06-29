@@ -16,7 +16,7 @@ phases:
     commands:
   build:
     commands:
-      - export DATABASE_URL="postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}?user=${DATABASE_USERNAME}&password=${DATABASE_PASSWORD}"
+      - export DATABASE_URL="postgresql://${DATABASE_HOST}:${DATABASE_PORT}/${DATABASE_NAME}?user=${DATABASE_USERNAME}&password=${DATABASE_PASSWORD}&sslmode=disable"
       # テーブルの作成を実行する。
       - sqlx migrate run --source adapter/migrations
       # 初期データの投入を実行する（不要な場合はコメントアウト）。

@@ -1,6 +1,11 @@
 use shared::config::DatabaseConfig;
 
-use sqlx::{PgPool, postgres::PgConnectOptions};
+use sqlx::{
+    PgPool,
+    postgres::{PgConnectOptions, PgSslMode},
+};
+
+pub mod model;
 
 fn make_pg_connect_options(config: &DatabaseConfig) -> PgConnectOptions {
     PgConnectOptions::new()
@@ -9,12 +14,17 @@ fn make_pg_connect_options(config: &DatabaseConfig) -> PgConnectOptions {
         .username(&config.username)
         .password(&config.password)
         .database(&config.database)
+        .ssl_mode(PgSslMode::Disable)
 }
 
 #[derive(Clone)]
 pub struct ConnectionPool(PgPool);
 
 impl ConnectionPool {
+    pub fn new(pool: PgPool) -> Self {
+        Self(pool)
+    }
+
     pub fn inner_ref(&self) -> &PgPool {
         &self.0
     }
