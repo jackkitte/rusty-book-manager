@@ -1,13 +1,20 @@
 [package]
-name = "adapter"
-version = "0.1.0"
-edition = "2024"
+    edition.workspace = true
+    license.workspace = true
+    name              = "adapter"
+    publish.workspace = true
+    version           = "0.1.0"
 
 [dependencies]
-kernel.workspace = true
-shared.workspace = true
-anyhow.workspace = true
-async-trait.workspace = true
-derive-new.workspace = true
-sqlx.workspace = true
-uuid.workspace = true
+    async-trait.workspace = true
+    bcrypt.workspace      = true
+    chrono.workspace      = true
+    derive-new.workspace  = true
+    kernel.workspace      = true
+    redis.workspace       = true
+    secrecy.workspace     = true
+    shared.workspace      = true
+    sqlx.workspace        = true
+
+[dev-dependencies]
+    anyhow.workspace = true

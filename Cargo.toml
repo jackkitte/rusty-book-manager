@@ -1,38 +1,74 @@
 [package]
-name = "rusty-book-manager"
-version = "0.1.0"
-edition = "2024"
+    edition.workspace = true
+    license.workspace = true
+    name              = "rusty-book-manager"
+    publish.workspace = true
+    version           = "0.1.0"
 
 [[bin]]
-name = "app"
-path = "src/bin/app.rs"
+    name = "app"
+    path = "src/bin/app.rs"
 
 [workspace]
-members = ["api", "kernel", "adapter", "shared", "registry"]
+    members = ["adapter", "api", "kernel", "registry", "shared"]
+
+[workspace.package]
+    edition = "2024"
+    license = "MIT"
+    publish = false
 
 [workspace.dependencies]
-adapter = { path = "./adapter" }
-api = { path = "./api" }
-kernel = { path = "./kernel" }
-shared = { path = "./shared" }
-registry = { path = "./registry" }
-anyhow = "1.0.98"
-axum = { version = "0.8.4", features = ["macros"] }
-sqlx = { version = "0.8.6", features = ["runtime-tokio", "uuid", "chrono", "macros", "postgres", "migrate"] }
-tokio = { version = "1.45.1", features = ["full"] }
-rstest = "0.25.0"
-async-trait = "0.1.88"
-derive-new = "0.7.0"
-uuid = { version = "1.17.0", features = ["v4", "serde"] }
-serde = { version = "1.0.219", features = ["derive"] }
-thiserror = "2.0.12"
+    adapter = {path = "./adapter"}
+    anyhow = "1.0.98"
+    api = {path = "./api"}
+    async-trait = "0.1.88"
+    axum = {version = "0.8.4", features = ["macros"]}
+    axum-extra = {version = "0.10.1", features = ["typed-header"]}
+    bcrypt = "0.17.0"
+    chrono = {version = "0.4.41", default-features = false, features = [
+        "serde",
+    ]}
+    derive-new = "0.7.0"
+    garde = {version = "0.22.0", features = ["derive", "email"]}
+    itertools = "0.14.0"
+    kernel = {path = "./kernel"}
+    mockall = "0.13.1"
+    redis = {version = "0.32.2", features = ["tokio-rustls-comp"]}
+    registry = {path = "./registry"}
+    secrecy = "0.10.3"
+    serde = {version = "1.0.219", features = ["derive"]}
+    shared = {path = "./shared"}
+    sqlx = {version = "0.8.6", features = [
+        "chrono",
+        "macros",
+        "migrate",
+        "postgres",
+        "runtime-tokio",
+        "uuid",
+    ]}
+    strum = {version = "0.27.1", features = ["derive"]}
+    thiserror = "2.0.12"
+    tokio = {version = "1.45.1", features = ["full"]}
+    tokio-stream = "0.1.17"
+    tower = "0.5.2"
+    tracing = {version = "0.1.41", features = ["log"]}
+    utoipa = {version = "5.4.0", features = ["axum_extras", "chrono", "uuid"]}
+    uuid = {version = "1.17.0", features = ["serde", "v4"]}
 
 [dependencies]
-adapter.workspace = true
-api.workspace = true
-registry.workspace = true
-shared.workspace = true
-anyhow.workspace = true
-tokio.workspace = true
-axum.workspace = true
-sqlx.workspace = true
+    adapter.workspace    = true
+    anyhow.workspace     = true
+    api.workspace        = true
+    axum.workspace       = true
+    opentelemetry-jaeger = {version = "0.22.0", features = ["rt-tokio"]}
+    registry.workspace   = true
+    shared.workspace     = true
+    tokio.workspace      = true
+    tower-http           = {version = "0.6.6", features = ["cors", "trace"]}
+    tracing.workspace    = true
+    tracing-subscriber   = {version = "0.3.19", features = ["env-filter", "json"]}
+    utoipa.workspace     = true
+    utoipa-redoc         = {version = "6.0.0", features = ["axum"]}
+
+[profile.dev.package.sqlx-macros]
+    opt-level = 3
