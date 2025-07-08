@@ -2,10 +2,9 @@ use axum::{
     Json,
     extract::{Path, State},
     http::StatusCode,
-    response::{IntoResponse, Response},
 };
 use registry::AppRegistry;
-use thiserror::Error;
+use shared::error::AppError;
 use uuid::Uuid;
 
 use crate::model::book::{BookResponse, CreateBookRequest};
@@ -19,7 +18,6 @@ pub async fn register_book(
         .create(request.into())
         .await
         .map(|_| StatusCode::CREATED)
-        .map_err(AppError::from)
 }
 
 pub async fn show_book_list(
@@ -36,7 +34,6 @@ pub async fn show_book_list(
                 .collect::<Vec<_>>()
         })
         .map(Json)
-        .map_err(AppError::from)
 }
 
 pub async fn show_book(
@@ -49,7 +46,8 @@ pub async fn show_book(
         .await
         .and_then(|book| match book {
             Some(book) => Ok(Json(book.into())),
-            None => Err(anyhow::anyhow!("The specific book was not found.")),
+            None => Err(AppError::EntityNotFound(
+                "The specific book was not found.".into(),
+            )),
         })
-        .map_err(AppError::from)
 }
