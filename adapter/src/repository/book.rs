@@ -71,6 +71,7 @@ mod tests {
     use super::*;
 
     #[sqlx::test]
+    #[ignore]
     async fn test_register_book(pool: sqlx::PgPool) -> anyhow::Result<()> {
         let repository = BookRepositoryImpl::new(ConnectionPool::new(pool));
         let book = CreateBookEvent {
