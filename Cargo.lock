@@ -16,6 +16,7 @@ dependencies = [
  "secrecy",
  "shared",
  "sqlx",
+ "uuid",
 ]
 
 [[package]]
@@ -94,11 +95,13 @@ dependencies = [
  "serde_json",
  "shared",
  "strum",
+ "thiserror 2.0.12",
  "tokio",
  "tokio-stream",
  "tower",
  "tracing",
  "utoipa",
+ "uuid",
 ]
 
 [[package]]
