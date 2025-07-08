@@ -34,40 +34,40 @@
 	REDIS_PORT    = "${REDIS_PORT_OUTER}"
 
 [tasks.before-build]
-	run_task = [{name = ["compose-up-db", "compose-up-redis", "migrate"]}]
+	run_task = [{name = ["compose-up-db", "migrate", "compose-up-redis"]}]
 
 [tasks.compose-build-app]
 	args = [
-		"${@}",
+		"compose",
+		"build",
+		"app",
 		"--build-arg",
 		"BUILDKIT_INLINE_CACHE=1",
-		"app",
-		"build",
-		"compose",
+		"${@}",
 	]
 	command = "docker"
 	extend = "set-env-local"
 
 [tasks.run]
-	args         = ["${@}", "run"]
+	args         = ["run", "${@}"]
 	command      = "cargo"
 	dependencies = ["before-build"]
 	extend       = "set-env-local"
 
 [tasks.run-in-docker]
-	args         = ["-d", "app", "compose", "up"]
+	args         = ["compose", "up", "-d", "app"]
 	command      = "docker"
 	dependencies = ["before-build", "compose-build-app"]
 	extend       = "set-env-docker"
 
 [tasks.logs]
-	args         = ["${@}", "compose", "logs"]
+	args         = ["compose", "logs", "${@}"]
 	command      = "docker"
 	dependencies = ["before-build"]
 	extend       = "set-env-docker"
 
 [tasks.build]
-	args         = ["${@}", "build"]
+	args         = ["build", "${@}"]
 	command      = "cargo"
 	dependencies = ["before-build"]
 	extend       = "set-env-local"
@@ -83,38 +83,38 @@
 [tasks.watch]
 	dependencies = ["before-build"]
 	extend       = "set-env-local"
-	run_task     = [{name = ["clippy", "fmt", "test"]}]
+	run_task     = [{name = ["fmt", "clippy", "test"]}]
 	watch        = true
 
 [tasks.fmt]
-	args    = ["${@}", "--all", "fmt"]
+	args    = ["fmt", "--all", "${@}"]
 	command = "cargo"
 	extend  = "set-env-local"
 
 [tasks.clippy]
-	args    = ["${@}", "--all", "--all-targets", "clippy"]
+	args    = ["clippy", "--all", "--all-targets", "${@}"]
 	command = "cargo"
 	extend  = "set-env-local"
 
 [tasks.test]
 	args = [
-		"--no-tests=pass",
-		"--status-level",
-		"--test-threads=1",
-		"--workspace",
-		"all",
 		"nextest",
 		"run",
+		"--workspace",
+		"--status-level",
+		"all",
+		"--test-threads=1",
+		"--no-tests=pass",
 	]
 	command = "cargo"
 	extend = "set-env-local"
 	install_crate = {crate_name = "cargo-nextest", binary = "cargo", test_arg = [
-		"--help",
 		"nextest",
+		"--help",
 	]}
 
 [tasks.clippy-ci]
-	args         = ["--", "--no-deps", "-Dwarnings", "clippy"]
+	args         = ["clippy", "--", "--no-deps", "-Dwarnings"]
 	command      = "cargo"
 	dependencies = ["before-build"]
 	extend       = "set-env-local"
@@ -143,35 +143,35 @@ done
 
 [tasks.psql]
 	args = [
-		"${@}",
-		"${DATABASE_URL}",
-		"${PWD}:/work",
-		"--network",
-		"--rm",
+		"run",
 		"-it",
-		"-v",
+		"--rm",
+		"--network",
 		"host",
+		"-v",
+		"${PWD}:/work",
 		"postgres:15",
 		"psql",
-		"run",
+		"${DATABASE_URL}",
+		"${@}",
 	]
 	command = "docker"
 	extend = "set-env-local"
 
 [tasks.initial-setup]
 	args = [
-		"${DATABASE_URL}",
-		"${PWD}:/work",
-		"--network",
-		"--rm",
-		"-f",
+		"run",
 		"-it",
-		"-v",
-		"/work/data/initial_setup.sql",
+		"--rm",
+		"--network",
 		"host",
+		"-v",
+		"${PWD}:/work",
 		"postgres:15",
 		"psql",
-		"run",
+		"${DATABASE_URL}",
+		"-f",
+		"/work/data/initial_setup.sql",
 	]
 	command = "docker"
 	extend = "set-env-local"
@@ -179,17 +179,17 @@ done
 	### Docker Compose
 
 [tasks.compose]
-	args    = ["${@}", "compose"]
+	args    = ["compose", "${@}"]
 	command = "docker"
 	extend  = "set-env-docker"
 
 [tasks.compose-up-db]
-	args    = ["-d", "compose", "postgres", "up"]
+	args    = ["compose", "up", "-d", "postgres"]
 	command = "docker"
 	extend  = "set-env-docker"
 
 [tasks.compose-up-redis]
-	args    = ["-d", "compose", "redis", "up"]
+	args    = ["compose", "up", "-d", "redis"]
 	command = "docker"
 	extend  = "set-env-docker"
 
@@ -199,6 +199,6 @@ done
 	extend  = "set-env-docker"
 
 [tasks.compose-remove]
-	args    = ["-v", "compose", "down"]
+	args    = ["compose", "down", "-v"]
 	command = "docker"
 	extend  = "set-env-docker"
