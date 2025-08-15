@@ -1,0 +1,34 @@
+# Build artifacts
+/target
+**/target
+
+# Git
+.git
+.gitignore
+
+# Node modules (if copied accidentally)
+node_modules
+
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# IDE/editor
+.vscode
+.idea
+*.swp
+
+# Logs
+logs
+*.log
+
+# Tests artifacts
+nextest
+
+# Docker
+Dockerfile*
+.dockerignore
+
+# Misc
+coverage

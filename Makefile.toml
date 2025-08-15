@@ -216,3 +216,54 @@ fn main() {
 }
 '''
 	script_runner = "@rust"
+
+	### Docker Cleanup
+
+# 使われていない停止中コンテナのみ削除 (イメージは残す)
+[tasks.docker-container-prune]
+	args    = ["container", "prune", "-f"]
+	command = "docker"
+
+# タグ無し(dangling)イメージのみ削除
+[tasks.docker-image-prune]
+	args    = ["image", "prune", "-f"]
+	command = "docker"
+
+# 参照されていない全イメージ削除(要注意)
+[tasks.docker-image-prune-all]
+	args    = ["image", "prune", "-a", "-f"]
+	command = "docker"
+
+# BuildKit キャッシュを含むビルドキャッシュ削除
+[tasks.docker-builder-prune]
+	args    = ["builder", "prune", "-f"]
+	command = "docker"
+
+# ネットワーク/ボリューム含め総合クリーン (本番DBボリューム等は注意)
+[tasks.docker-system-prune]
+	args    = ["system", "prune", "-a", "-f", "--volumes"]
+	command = "docker"
+
+# ディスク使用状況表示
+[tasks.docker-df]
+	args    = ["system", "df"]
+	command = "docker"
+
+# まとめ実行 (安全寄り: dangling + container + builder cache)
+[tasks.docker-clean-safe]
+	run_task = [
+		{name = "docker-container-prune"},
+		{name = "docker-image-prune"},
+		{name = "docker-builder-prune"},
+		{name = "docker-df"},
+	]
+
+# まとめ実行 (危険: 参照されていないイメージ/ボリュームも全削除)
+[tasks.docker-clean-all]
+	run_task = [
+		{name = "docker-container-prune"},
+		{name = "docker-image-prune-all"},
+		{name = "docker-builder-prune"},
+		{name = "docker-system-prune"},
+		{name = "docker-df"},
+	]
