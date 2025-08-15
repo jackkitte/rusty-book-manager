@@ -252,18 +252,22 @@ fn main() {
 # まとめ実行 (安全寄り: dangling + container + builder cache)
 [tasks.docker-clean-safe]
 	run_task = [
-		{name = "docker-container-prune"},
-		{name = "docker-image-prune"},
-		{name = "docker-builder-prune"},
-		{name = "docker-df"},
+		{name = [
+			"docker-container-prune",
+			"docker-image-prune",
+			"docker-builder-prune",
+			"docker-df",
+		]},
 	]
 
 # まとめ実行 (危険: 参照されていないイメージ/ボリュームも全削除)
 [tasks.docker-clean-all]
 	run_task = [
-		{name = "docker-container-prune"},
-		{name = "docker-image-prune-all"},
-		{name = "docker-builder-prune"},
-		{name = "docker-system-prune"},
-		{name = "docker-df"},
+		{name = [
+			"docker-container-prune",
+			"docker-image-prune-all",
+			"docker-builder-prune",
+			"docker-system-prune",
+			"docker-df",
+		]},
 	]
